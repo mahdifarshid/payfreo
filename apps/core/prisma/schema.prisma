@@ -1,0 +1,15 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model CoreMetadata {
+  id        String   @id
+  createdAt DateTime @default(now())
+
+  @@map("core_metadata")
+}
