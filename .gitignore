@@ -1,0 +1,37 @@
+# Local working plans, reports, notes, and supporting artifacts. Never force-add.
+/agent/
+
+# Local tool and cloud configuration
+/.agents/
+/.codex/
+/.aws
+
+# Dependencies and generated output
+node_modules/
+.pnpm-store/
+dist/
+build/
+coverage/
+.cache/
+.astro/
+*.tsbuildinfo
+
+# Local configuration, logs, and runtime data
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.log
+*.sqlite
+*.sqlite-*
+*.db
+*.db-shm
+*.db-wal
+
+# Editor and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
