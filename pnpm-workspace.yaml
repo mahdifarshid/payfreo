@@ -1,0 +1,11 @@
+packages:
+  - apps/*
+
+overrides:
+  ohash: 2.0.11
+  strtok3: 10.3.5
+
+allowBuilds:
+  '@prisma/client': true
+  '@prisma/engines': true
+  prisma: true

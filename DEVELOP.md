@@ -1,9 +1,9 @@
 # PayFreo — DEVELOPMENT MASTER PLAN
 
-> **Status:** Planning specification, not an assertion of implemented functionality. **Project
+> **Status:** Planning specification with a local Core foundation; no payment engine. **Project
 > owner:** [Mahdi Farshid](https://github.com/mahdifarshid) **Project brand:** PayFreo (selected by
 > the maintainer; the public repository exists, while domain, trademark and package availability
-> remain unverified). **Document version:** 0.2 — 2026-10-25 **Language for all documentation,
+> remain unverified). **Document version:** 0.3 — 2026-10-25 **Language for all documentation,
 > comments, contributor-facing text and working documents:** English. **North star:** _Your server.
 > Your wallet. Verifiable payments._
 
@@ -11,9 +11,9 @@
 
 ### Repository foundation and working-file policy
 
-The current milestone provides English project documentation, contributor standards, a private root
-tooling package, pinned Prettier configuration, and a formatting-only CI workflow. Payment code,
-workspaces, SDKs, contracts, and deployment remain future work. Read
+The current milestone adds discovery records and a local Core foundation to the repository
+standards. The pnpm workspace contains a NestJS service, SQLite migration, health checks, tests, and
+container definition. Payment endpoints, SDKs, contracts, and deployment remain future work. Read
 [CONTRIBUTING.md](CONTRIBUTING.md) for the maintained development conventions and local commands.
 
 Write all documentation, comments, and working files in English. Keep temporary plans under
@@ -29,8 +29,8 @@ and release notes contain concise, relevant validation evidence.
 
 Use the committed formatter settings throughout development: UTF-8, LF, final newline, two-space
 indentation, 100-character preferred width, semicolons, single quotes, and trailing commas. Pin
-tools and commit the generated lockfile. Add ESLint and TypeScript checks when source code is
-introduced; do not label unimplemented checks as passing.
+tools and commit the generated lockfile. Run the committed ESLint and TypeScript checks with source
+changes; do not label unimplemented checks as passing.
 
 Preserve existing local tool configuration in place. Repository cleanup must not delete, move,
 rename, or rewrite it. Keep it excluded from Git and build inputs; do not relocate configuration
@@ -40,10 +40,10 @@ into the scratch workspace.
 
 Node.js 24 LTS is the primary development target, pinned in `.node-version`. Preserve compatibility
 with Node.js 22.13.0 and later 22.x versions; pnpm 11.10.0 sets that minimum. The root engine range
-admits only these two release lines. Formatting CI runs a Node.js 22/24 matrix. Extend this matrix
-with lint, type checks, builds, and runtime tests as implementation arrives. Do not use Node.js
-24-only APIs or dependencies that exclude Node.js 22 without an explicit compatibility decision.
-Keep `.node-version`, CI pins, the package manifest, and contributor documentation synchronized.
+admits only these two release lines. Formatting and Core CI run a Node.js 22/24 matrix. Do not use
+Node.js 24-only APIs or dependencies that exclude Node.js 22 without an explicit compatibility
+decision. Keep `.node-version`, CI pins, the package manifest, and contributor documentation
+synchronized.
 
 ### Task workflow
 
@@ -144,13 +144,13 @@ _planned_, not _available_.
 
 ### Recommended initial implementation
 
-- **Core:** TypeScript, Node.js 24 LTS as the primary runtime with Node.js 22 compatibility, Fastify
-  (or comparably minimal documented HTTP framework), strict types and runtime schemas (e.g. Zod),
-  OpenAPI 3.1, a typed EVM client such as Viem. Verify pinned compatible versions rather than
-  hardcoding unverified versions.
-- **Storage:** SQLite for single-instance MVP, with persistent Docker volume, WAL as appropriate,
-  migrations and backups; design a repository layer permitting PostgreSQL later. Explicitly disallow
-  multi-replica operation on SQLite without validated coordination.
+- **Core:** TypeScript and NestJS with the default Express adapter, Node.js 24 LTS as the primary
+  runtime with Node.js 22 compatibility, strict types and Zod configuration validation. OpenAPI 3.1
+  and a typed EVM client such as Viem belong to the payment milestone. Verify pinned compatible
+  versions rather than hardcoding unverified versions.
+- **Storage:** SQLite for the single-instance foundation, with a persistent Docker volume and
+  migrations. PostgreSQL is the intended final database and requires separate migrations, transfer
+  tests, and backups. Explicitly disallow multi-replica operation on SQLite.
 - **Job processing:** Durable database-backed reconciliation scheduler for MVP. Redis, NATS, Kafka
   etc. are **optional future adapters**, not boot prerequisites.
 - **Infrastructure:** Minimal multi-stage Docker image, non-root process, read-only filesystem where
@@ -373,18 +373,19 @@ production funds by default. Seek legal review before forming a business, accept
 offering hosting/support or promising contributors compensation. Trademarks may protect brand
 identity, not block lawful source reuse.
 
-## 7. Licensing policy — provisional pending review
+## 7. Licensing policy
 
-Provisional model **Core: AGPL-3.0-only; SDKs: Apache-2.0; documentation: CC BY 4.0 where authors
-agree; code examples Apache-2.0 or explicitly marked permissive**. On-chain contracts require
-separate license review considering verifier compatibility, reuse, adoption and source publication;
-don't assume AGPL is the best choice for bytecode deployed by unrelated merchants. Alternative for
-Core: MPL-2.0 if widespread embedded use becomes more valuable than network copyleft. Both models
-allow commercial use; neither stops forks or lawful competition or guarantees avoidance of lawsuits.
-Include full canonical license texts, SPDX identifiers, NOTICE where required, third-party license
-inventory, contributor inbound=outbound policy and clear scope for directories. No license changes
-without maintainer review and contributor rights analysis. Explicit trademark policy for `PayFreo`
-logo/name.
+The maintainer selected **AGPL-3.0-only for Core code**, with the full text in
+[`apps/core/LICENSE`](apps/core/LICENSE). Provisional model for future material: **SDKs: Apache-2.0;
+documentation: CC BY 4.0 where authors agree; code examples Apache-2.0 or explicitly marked
+permissive**. On-chain contracts require separate license review considering verifier compatibility,
+reuse, adoption and source publication; don't assume AGPL is the best choice for bytecode deployed
+by unrelated merchants. Alternative for Core: MPL-2.0 if widespread embedded use becomes more
+valuable than network copyleft. Both models allow commercial use; neither stops forks or lawful
+competition or guarantees avoidance of lawsuits. Include full canonical license texts, SPDX
+identifiers, NOTICE where required, third-party license inventory, contributor inbound=outbound
+policy and clear scope for directories. No license changes without maintainer review and contributor
+rights analysis. Explicit trademark policy for `PayFreo` logo/name.
 
 ## 8. Open-source repository governance and Git standards
 
@@ -457,12 +458,12 @@ advertise nonexistent audits, sponsorships or customer logos.
 
 ## 9. CI/CD and GitHub Actions — minimum required
 
-**Foundation exception:** `.github/workflows/format.yml` currently runs only the real formatter
-check on pull requests and pushes to `main`. It uses pinned actions, read-only permissions, frozen
-installs, and no publication steps. `.github/dependabot.yml` maintains action and npm dependency
-update proposals. Hosted execution and repository branch protection must be verified after GitHub
-setup. The jobs below are staged requirements: add each with the corresponding implementation and
-never replace it with a placeholder success command.
+`.github/workflows/format.yml` checks formatting, and `.github/workflows/core.yml` checks the
+current source on Node.js 22 and 24, including lint, types, tests, build, migration, and container
+build. They use pinned actions, read-only permissions, frozen installs, and no publication steps.
+`.github/dependabot.yml` maintains action and npm dependency update proposals. Hosted execution and
+repository branch protection remain to be verified. The jobs below are staged requirements: add each
+with the corresponding implementation and never replace it with a placeholder success command.
 
 **CI must run on every PR and push to `main`**, with appropriate path filtering that does not skip
 required security checks. Pipeline jobs:
@@ -735,7 +736,7 @@ repository is unavailable; do not delete or replace protected Git metadata to ma
 | ---------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | Foundation                                     | Repository standards and formatting                                       | Local formatting and documentation checks pass; Git exclusions verified when a repository is available |
 | Discovery (Task 0)                             | Benchmark, scope, attribution decision, threat model, licensing questions | Evidence and unresolved decisions recorded; no invented approvals                                      |
-| Core skeleton (Task 1)                         | Fastify service, configuration, SQLite, health, Docker, tests             | Clean bootstrap, actionable configuration errors, passing checks                                       |
+| Core skeleton (Task 1)                         | NestJS service, configuration, SQLite, health, Docker, tests              | Clean bootstrap, actionable configuration errors, passing checks                                       |
 | Payment MVP (Task 2)                           | Invoice API, verifier, atomic attribution, reconciliation, webhooks       | Deterministic local tests, including race/replay/reorg and ambiguous-payment rejection                 |
 | Integration and project operations (Tasks 3–4) | TS SDK, checkout example, contributor and release tooling                 | End-to-end testnet demo and fork-safe CI; release dry run                                              |
 | Public presentation (Task 5)                   | Static docs and support information                                       | Verified site and links; donation destinations only after activation requirements are met              |

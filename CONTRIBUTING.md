@@ -1,7 +1,7 @@
 # Contributing to PayFreo
 
-PayFreo is at the repository foundation stage. The payment engine, SDKs, contracts, and deployment
-instructions are planned. Read [README.md](README.md) for current status and
+PayFreo has a local Core foundation with health checks and SQLite migrations. The payment engine,
+SDKs, and contracts are planned. Read [README.md](README.md) for current status and
 [DEVELOP.md](DEVELOP.md) for scope, security constraints, and the development sequence.
 
 ## Local tooling
@@ -18,7 +18,14 @@ compatibility. The root package is private and is not a published PayFreo SDK.
 With the pinned tools available, run from the repository root:
 
 ```sh
-pnpm install --frozen-lockfile --ignore-scripts
+cp .env.example .env
+pnpm install --frozen-lockfile
+pnpm --filter @payfreo/core db:generate
+pnpm db:migrate
+pnpm build
+pnpm lint
+pnpm typecheck
+pnpm test
 pnpm format
 pnpm format:check
 ```
@@ -41,7 +48,11 @@ and other formatter-managed constructs may exceed the preferred width.
   conventions when additional languages are introduced. Root policy documents use conventional
   uppercase names, such as `README.md`.
 - Keep HTTP handling, domain logic, persistence, and blockchain access separate. SDKs consume the
-  shared API contract; they must not duplicate payment verification.
+  shared API contract; they must not duplicate payment verification. Add a focused NestJS module for
+  each feature, keep controllers thin, place behavior in services, and expose narrow persistence
+  interfaces where another module needs them.
+- Use English comments for non-obvious invariants, trust boundaries, and failure handling. Prefer
+  clear names over comments that merely restate a line of code.
 - Create directories only when needed. The intended layout is documented in DEVELOP; do not add
   empty SDKs, placeholder services, or speculative abstractions.
 - Keep README concise and accurate. Maintain detailed requirements and the public roadmap in
@@ -93,8 +104,8 @@ Before submitting a PR:
 5. Describe the problem, resulting behavior, and validation. Report checks as PASS, FAIL, or NOT RUN
    with commands and material limitations. Keep raw execution logs in `agent/reports/`.
 
-The foundation CI checks formatting only. ESLint, TypeScript checks, builds, and meaningful runtime
-tests are added with the first source modules; do not create scripts that pretend those checks pass.
+CI checks formatting, ESLint, TypeScript, tests, builds, and a fresh SQLite migration on Node.js 22
+and 24. The Core tests do not claim to exercise payment verification or real network settlement.
 Require human review for security-sensitive payment changes. Do not weaken validation or silently
 skip a required test to make CI green.
 
@@ -104,10 +115,10 @@ Development remains local/testnet only. Do not use merchant keys, real funds, pr
 live donation transfers in tests. No withdrawal signing, custody, or hidden maintainer fee belongs
 in the initial Core.
 
-Do not publish private vulnerability details in public issues. A verified private reporting channel
-and `SECURITY.md` must be established before a public code release; no reporting SLA is promised
-yet.
+Do not publish private vulnerability details in public issues. Use the contact in
+[SECURITY.md](SECURITY.md); no reporting SLA is promised.
 
-Funding and licensing remain provisional as described in DEVELOP. Do not invent donation addresses,
-activated sponsor accounts, bounty commitments, license approvals, or audit evidence. Establish the
-applicable license and contribution terms before accepting code contributions for public release.
+Funding remains provisional as described in DEVELOP. Core code has an
+[AGPL-3.0-only license](apps/core/LICENSE); future SDK and documentation licensing remains to be
+decided. Do not invent donation addresses, activated sponsor accounts, bounty commitments, or audit
+evidence.

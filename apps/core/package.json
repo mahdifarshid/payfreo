@@ -1,0 +1,32 @@
+{
+  "name": "@payfreo/core",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Merchant-hosted PayFreo Core foundation. Local and testnet only.",
+  "license": "AGPL-3.0-only",
+  "engines": {
+    "node": ">=22.13.0 <23 || >=24.0.0 <25"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit && tsc -p tsconfig.test.json --noEmit",
+    "test": "tsc -p tsconfig.test.json && node --test .test-dist/tests/*.test.js",
+    "start": "node dist/main.js",
+    "start:local": "node --env-file=../../.env dist/main.js",
+    "db:generate": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js generate",
+    "db:migrate": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js migrate deploy",
+    "db:status": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js migrate status"
+  },
+  "dependencies": {
+    "@nestjs/common": "11.2.3",
+    "@nestjs/core": "11.2.3",
+    "@nestjs/platform-express": "11.1.28",
+    "@prisma/client": "6.19.3",
+    "reflect-metadata": "0.2.2",
+    "rxjs": "7.8.2",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "prisma": "6.19.3"
+  }
+}

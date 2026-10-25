@@ -4,8 +4,9 @@
 
 > **Pre-alpha · Local/testnet only · Not for real funds**
 >
-> This repository currently contains specifications and development tooling. There is no implemented
-> payment engine, SDK, smart contract, production deployment, or independent security audit.
+> This repository contains a local Core foundation, design records, and development tooling. There
+> is no implemented payment engine, SDK, smart contract, production deployment, or independent
+> security audit.
 
 _Your server. Your wallet. Verifiable payments._
 
@@ -23,17 +24,18 @@ working code and reproducible evidence. PayFreo does not claim superiority over 
 
 ## Current status
 
-| Area                                                    | Status                                              |
-| ------------------------------------------------------- | --------------------------------------------------- |
-| Product specification and development sequence          | Documented in [DEVELOP.md](DEVELOP.md)              |
-| Contributor standards and formatting tools              | Included in this repository                         |
-| Formatting CI                                           | Workflow defined; hosted execution not yet verified |
-| Core API, persistence, and ERC-20 verifier              | Planned                                             |
-| TypeScript SDK and checkout example                     | Planned after Core verification                     |
-| PHP, Python, Go, and Rust integrations                  | Later, based on demonstrated demand                 |
-| Revenue sharing, governance, and escrow contracts       | Separate future modules                             |
-| Public installation, production release, security audit | Not available                                       |
-| Sponsorship and contributor payments                    | Not active                                          |
+| Area                                              | Status                                              |
+| ------------------------------------------------- | --------------------------------------------------- |
+| Product specification and development sequence    | Documented in [DEVELOP.md](DEVELOP.md)              |
+| Scope, attribution, storage, and threat model     | Initial design records in [docs/](docs/)            |
+| Core foundation                                   | NestJS service, SQLite migration, and health checks |
+| Formatting and Core CI                            | Defined; hosted execution not yet verified          |
+| Invoice API, ERC-20 verifier, and signed webhooks | Planned                                             |
+| TypeScript SDK and checkout example               | Planned after Core verification                     |
+| PHP, Python, Go, and Rust integrations            | Later, based on demonstrated demand                 |
+| Revenue sharing, governance, and escrow contracts | Separate future modules                             |
+| Production release and independent security audit | Not available                                       |
+| Sponsorship and contributor payments              | Not active                                          |
 
 A feature is implemented only after code exists, documentation is accurate, and its required checks
 have actually passed. Planned integrations are not supported integrations.
@@ -52,32 +54,57 @@ The customer signs in their own wallet. The Core observes and verifies the chain
 recipient, exact amount, transaction receipt, transfer event, and confirmation evidence. It must not
 request merchant private keys or sign withdrawals.
 
-Ordinary ERC-20 transfers do not carry an invoice ID. The MVP therefore requires explicit,
-wallet-controlled payment attribution and atomic event uniqueness. Ambiguous transfers must remain
-unsettled for review. Reconciliation, replay protection, reorganization handling, and idempotent
-webhooks are required before claiming reliable payment verification.
+Ordinary ERC-20 transfers do not carry an invoice ID. The chosen MVP design uses a distinct
+merchant-provisioned public receiving address for each invoice; Core never creates or holds wallet
+keys. Addresses cannot be reused, including after expiry. Atomic event uniqueness, reconciliation,
+replay protection, reorganization handling, and idempotent webhooks are required before claiming
+reliable payment verification. See the [attribution decision](docs/ADR/0002-payment-attribution.md).
 
 ## Development setup
 
-This setup runs repository tooling only. There is no payment service to start yet.
+The Core foundation starts locally and exposes only `/health/live` and `/health/ready`. It does not
+create invoices or process payments.
 
 Prerequisites: Node.js **24 LTS** (recommended; pinned to **24.22.1**) or Node.js **22.13.0+ within
-22.x**, with pnpm **11.10.0**. Formatting CI is configured for both Node.js 22 and 24. Application
-compatibility will be validated when runtime code exists.
+22.x**, with pnpm **11.10.0**. CI is configured for both Node.js lines.
 
 ```sh
-pnpm install --frozen-lockfile --ignore-scripts
-pnpm format:check
+cp .env.example .env
+pnpm install --frozen-lockfile
+pnpm --filter @payfreo/core db:generate
+pnpm db:migrate
+pnpm build
+pnpm --filter @payfreo/core start:local
 ```
 
-Run `pnpm format` to apply formatting. Read [CONTRIBUTING.md](CONTRIBUTING.md) for organization,
-English-language requirements, organization, and review expectations.
+In another terminal, check the service:
+
+```sh
+curl http://127.0.0.1:3000/health/live
+curl http://127.0.0.1:3000/health/ready
+```
+
+Run the local checks before contributing:
+
+```sh
+pnpm format:check
+pnpm lint
+pnpm typecheck
+pnpm test
+```
+
+The SQLite file is local and ignored by Git. For the container path, run
+`docker compose up --build`; Compose binds port 3000 to localhost and persists SQLite in a named
+volume. Run `pnpm format` to apply formatting. Read [CONTRIBUTING.md](CONTRIBUTING.md) for review
+expectations.
 
 ## Architecture and roadmap
 
-The proposed stack is TypeScript, Fastify, a reviewed EVM client, OpenAPI 3.1, SQLite for a single
-Core instance, and a durable database-backed worker. SDKs share the API contract and do not
-reimplement blockchain verification.
+The Core foundation uses NestJS, TypeScript, Express, Prisma, and SQLite for one local instance.
+PostgreSQL is the target database for the final service; it needs its own migrations and validation.
+The planned verifier will use a reviewed EVM client and versioned OpenAPI contract. SDKs will
+consume that contract rather than reimplement blockchain verification. Current module boundaries are
+documented in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 Development proceeds through these milestones:
 
@@ -93,8 +120,10 @@ See [DEVELOP.md](DEVELOP.md) for acceptance criteria, security gates, and the in
 layout. No milestone has a promised delivery date. A static documentation site will not host the
 payment engine, merchant configuration, or secrets.
 
-The documentation website is planned for GitHub Pages using its default `github.io` address; no
-custom domain purchase is required. Website deployment is pending.
+The static documentation site is in [`apps/website/public`](apps/website/public). Run
+`pnpm site:check` to validate its local links and metadata. The Pages workflow checks pull requests
+and deploys the site from `main` after GitHub Pages is configured to use GitHub Actions. It uses the
+default `github.io` address, so no custom domain is required. Deployment is pending.
 
 ## Contributing and security
 
@@ -106,10 +135,10 @@ The MVP is receive-only: no custody, merchant withdrawal credentials, hidden fee
 payouts, spender allowances, or mandatory maintainer backend. A compromised application or RPC can
 still mislead users; the design does not eliminate financial risk.
 
-Private vulnerability reporting, a threat model, incident procedures, and independent security
-review are required before an applicable public code or production release. Those processes are
-planned; no private contact channel or audit is claimed here. Do not post sensitive vulnerability
-details in public issues or use real funds for development.
+Read [SECURITY.md](SECURITY.md) for private vulnerability reporting and
+[docs/THREAT_MODEL.md](docs/THREAT_MODEL.md) for the current draft threat model. Incident procedures
+and independent security review remain future gates. Do not post sensitive vulnerability details in
+public issues or use real funds for development.
 
 ## Support development
 
@@ -133,10 +162,9 @@ respect donor and contributor privacy.
 [mahdifarshid/payfreo](https://github.com/mahdifarshid/payfreo). Domain ownership, trademarks, and
 public package identifiers have not been verified. No deployed website is claimed.
 
-The provisional licensing proposal is AGPL-3.0-only for the Core, Apache-2.0 for SDKs and marked
-code examples, and CC BY 4.0 for documentation where authors agree. Future contracts require a
-separate license decision. Canonical license files and approval are still pending; do not assume
-these proposed permissions have already been granted.
+The Core code in `apps/core/` is licensed under [AGPL-3.0-only](apps/core/LICENSE). Apache-2.0 for
+future SDKs and examples and CC BY 4.0 for documentation remain proposals requiring separate
+decisions. Future contracts require their own license review.
 
 The maintainer's residence and prospective payment routes require a separate review before real
 sponsorship, payouts, or commercial operations. See DEVELOP for existing legal and operational

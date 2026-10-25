@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="PayFreo">
+  <rect width="64" height="64" rx="16" fill="#10262b" />
+  <path d="M20 47V17h15c9 0 14 5 14 12s-5 12-14 12h-7v6h-8Zm8-14h7c4 0 6-1 6-4s-2-4-6-4h-7v8Z" fill="#c8f0e5" />
+  <circle cx="50" cy="14" r="6" fill="#f7b878" />
+</svg>

@@ -1,7 +1,7 @@
 {
   "name": "payfreo-repository",
   "private": true,
-  "description": "Repository documentation and development tooling for PayFreo.",
+  "description": "Development workspace for the PayFreo Core.",
   "packageManager": "pnpm@11.10.0",
   "engines": {
     "node": ">=22.13.0 <23 || >=24.0.0 <25",
@@ -9,9 +9,20 @@
   },
   "scripts": {
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "typecheck": "pnpm --filter @payfreo/core typecheck",
+    "build": "pnpm --filter @payfreo/core build",
+    "test": "pnpm --filter @payfreo/core test",
+    "db:migrate": "pnpm --filter @payfreo/core db:migrate",
+    "site:check": "node apps/website/check.mjs"
   },
   "devDependencies": {
-    "prettier": "3.9.5"
+    "@eslint/js": "9.39.5",
+    "@types/node": "22.20.5",
+    "eslint": "9.39.5",
+    "prettier": "3.9.5",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.65.0"
   }
 }

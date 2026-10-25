@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /payfreo/
+
+Sitemap: https://mahdifarshid.github.io/payfreo/sitemap.xml
