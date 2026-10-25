@@ -120,8 +120,10 @@ See [DEVELOP.md](DEVELOP.md) for acceptance criteria, security gates, and the in
 layout. No milestone has a promised delivery date. A static documentation site will not host the
 payment engine, merchant configuration, or secrets.
 
-The documentation website is planned for GitHub Pages using its default `github.io` address; no
-custom domain purchase is required. Website deployment is pending.
+The static documentation site is in [`apps/website/public`](apps/website/public). Run
+`pnpm site:check` to validate its local links and metadata. The Pages workflow checks pull requests
+and deploys the site from `main` after GitHub Pages is configured to use GitHub Actions. It uses the
+default `github.io` address, so no custom domain is required. Deployment is pending.
 
 ## Contributing and security
 

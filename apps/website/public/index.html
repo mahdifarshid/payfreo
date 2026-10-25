@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f7f8f5" />
+    <meta
+      name="description"
+      content="PayFreo is an open-source, merchant-hosted crypto payment Core in development. Explore the architecture, current progress, and local setup."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="PayFreo — Your server. Your wallet." />
+    <meta
+      property="og:description"
+      content="A receive-only, merchant-hosted payment Core in development. Local and testnet use only."
+    />
+    <meta property="og:url" content="https://mahdifarshid.github.io/payfreo/" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="canonical" href="https://mahdifarshid.github.io/payfreo/" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+    <title>PayFreo — Your server. Your wallet.</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="site-shell">
+      <header class="site-header">
+        <a class="brand" href="./" aria-label="PayFreo home">
+          <span class="brand-mark" aria-hidden="true">P<span class="brand-dot"></span></span>
+          <span>PayFreo</span>
+        </a>
+        <nav class="site-nav" aria-label="Main navigation">
+          <a class="active" href="./" aria-current="page">Overview</a>
+          <a href="./docs.html">Developer notes</a>
+          <a href="./support.html">Support</a>
+          <a class="nav-source" href="https://github.com/mahdifarshid/payfreo"
+            >GitHub <span aria-hidden="true">↗</span></a
+          >
+        </nav>
+      </header>
+
+      <main id="main">
+        <section class="hero section-grid" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <p class="eyebrow">
+              <span class="eyebrow-line"></span> Open-source infrastructure · Pre-alpha
+            </p>
+            <h1 id="hero-title">
+              Your server.<br />Your wallet.<br /><em>Verifiable payments.</em>
+            </h1>
+            <p class="hero-lead">
+              PayFreo is a merchant-hosted crypto payment Core in development. It is being built to
+              help applications verify supported token payments while the merchant keeps control of
+              the server, data, RPC provider, and receiving wallet.
+            </p>
+            <div class="button-row">
+              <a class="button button-primary" href="./docs.html"
+                >Explore the foundation <span aria-hidden="true">↗</span></a
+              >
+              <a class="button button-secondary" href="https://github.com/mahdifarshid/payfreo"
+                >View on GitHub <span aria-hidden="true">↗</span></a
+              >
+            </div>
+            <p class="hero-note">
+              <span class="status-pulse" aria-hidden="true"></span> Local and testnet development
+              only. Do not use real funds.
+            </p>
+          </div>
+
+          <figure class="hero-visual">
+            <div class="visual-head">
+              <span class="visual-label">PAYMENT FLOW / TARGET DESIGN</span>
+              <span class="visual-index">01—04</span>
+            </div>
+            <div class="flow-lane">
+              <div class="flow-node node-app">
+                <span class="node-symbol" aria-hidden="true">{ }</span>
+                <div>
+                  <span class="node-name">Merchant app</span
+                  ><span class="node-detail">Creates payment intent</span>
+                </div>
+              </div>
+              <span class="flow-connector" aria-hidden="true"></span>
+              <div class="flow-node node-core">
+                <span class="node-symbol core-symbol" aria-hidden="true">P</span>
+                <div>
+                  <span class="node-name">PayFreo Core</span
+                  ><span class="node-detail">Checks on-chain evidence</span>
+                </div>
+                <span class="node-tag">SELF-HOSTED</span>
+              </div>
+              <span class="flow-connector" aria-hidden="true"></span>
+              <div class="flow-node node-chain">
+                <span class="node-symbol" aria-hidden="true">◇</span>
+                <div>
+                  <span class="node-name">Configured chain</span
+                  ><span class="node-detail">Receipt + transfer event</span>
+                </div>
+              </div>
+            </div>
+            <div class="flow-bottom">
+              <span class="flow-bottom-icon" aria-hidden="true">↗</span>
+              <p>
+                <strong>Customer wallet → Merchant wallet</strong><br />The customer signs. The
+                merchant receives.
+              </p>
+            </div>
+            <figcaption class="visual-disclaimer">
+              The payment flow is a design target. The current Core exposes health checks only.
+            </figcaption>
+          </figure>
+        </section>
+
+        <section class="status-bar" aria-label="Project status">
+          <div>
+            <span class="status-bar-label">CURRENT STAGE</span><strong>Core foundation</strong>
+          </div>
+          <div>
+            <span class="status-bar-label">RUNTIME TARGET</span><strong>Node.js 24 + 22</strong>
+          </div>
+          <div>
+            <span class="status-bar-label">DATABASE TODAY</span
+            ><strong>SQLite · single instance</strong>
+          </div>
+          <div>
+            <span class="status-bar-label">PAYMENT STATUS</span><strong>Not implemented</strong>
+          </div>
+        </section>
+
+        <section class="section-block" id="principles" aria-labelledby="principles-title">
+          <div class="section-heading">
+            <p class="eyebrow"><span class="eyebrow-line"></span> The principles</p>
+            <h2 id="principles-title">Control belongs with the operator.</h2>
+            <p>
+              Each decision in the first release starts with a clear trust boundary and a narrow
+              scope.
+            </p>
+          </div>
+          <div class="principle-grid">
+            <article class="principle-card">
+              <span class="card-number">01 /</span>
+              <div class="card-glyph" aria-hidden="true">⌂</div>
+              <h3>Merchant-hosted</h3>
+              <p>
+                The merchant runs the Core, chooses the RPC provider, and owns the database and
+                receiving addresses.
+              </p>
+            </article>
+            <article class="principle-card">
+              <span class="card-number">02 /</span>
+              <div class="card-glyph" aria-hidden="true">↘</div>
+              <h3>Receive-only</h3>
+              <p>
+                The initial design has no withdrawals, sweeping, escrow, or merchant signing keys
+                inside Core.
+              </p>
+            </article>
+            <article class="principle-card">
+              <span class="card-number">03 /</span>
+              <div class="card-glyph" aria-hidden="true">◎</div>
+              <h3>Evidence before status</h3>
+              <p>
+                Future settlement must match an invoice to a unique address and verified on-chain
+                transfer evidence.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section
+          class="progress-section section-grid"
+          id="progress"
+          aria-labelledby="progress-title"
+        >
+          <div>
+            <p class="eyebrow"><span class="eyebrow-line"></span> Built in stages</p>
+            <h2 id="progress-title">Know what exists.<br /><em>Know what comes next.</em></h2>
+            <p class="section-intro">
+              The repository separates working code from design decisions. Payment claims wait for
+              deterministic tests and review.
+            </p>
+            <a class="text-link" href="https://github.com/mahdifarshid/payfreo/blob/main/DEVELOP.md"
+              >Read the development plan <span aria-hidden="true">↗</span></a
+            >
+          </div>
+          <ol class="milestone-list">
+            <li class="milestone-done">
+              <span class="milestone-dot" aria-hidden="true"></span>
+              <div>
+                <span class="milestone-label">NOW / FOUNDATION</span>
+                <h3>Service skeleton</h3>
+                <p>
+                  NestJS modules, validated configuration, SQLite migration, health checks, tests,
+                  and local container setup.
+                </p>
+              </div>
+            </li>
+            <li>
+              <span class="milestone-dot" aria-hidden="true"></span>
+              <div>
+                <span class="milestone-label">NEXT / TESTNET MVP</span>
+                <h3>Payment verification</h3>
+                <p>
+                  Invoice API, chain evidence, unique address attribution, reconciliation, and
+                  signed webhooks.
+                </p>
+              </div>
+            </li>
+            <li>
+              <span class="milestone-dot" aria-hidden="true"></span>
+              <div>
+                <span class="milestone-label">LATER / INTEGRATIONS</span>
+                <h3>SDKs and examples</h3>
+                <p>
+                  A reference TypeScript client, checkout example, and other framework integrations
+                  after Core validation.
+                </p>
+              </div>
+            </li>
+          </ol>
+        </section>
+
+        <section class="terminal-section" aria-labelledby="terminal-title">
+          <div class="terminal-copy">
+            <p class="eyebrow"><span class="eyebrow-line"></span> Start locally</p>
+            <h2 id="terminal-title">A foundation you can inspect.</h2>
+            <p>
+              Run the current service on your machine. The endpoints report process and database
+              readiness; they do not accept payments.
+            </p>
+            <a class="text-link" href="./docs.html"
+              >Full setup and limitations <span aria-hidden="true">↗</span></a
+            >
+          </div>
+          <div class="terminal" role="region" aria-label="Local setup commands">
+            <div class="terminal-top">
+              <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span
+              ><span>payfreo / local setup</span>
+            </div>
+            <pre><code><span class="terminal-comment"># Node.js 24 or supported 22.x · pnpm 11.10.0</span>
+<span class="terminal-prompt">$</span> cp .env.example .env
+<span class="terminal-prompt">$</span> pnpm install --frozen-lockfile
+<span class="terminal-prompt">$</span> pnpm --filter @payfreo/core db:generate
+<span class="terminal-prompt">$</span> pnpm db:migrate && pnpm build
+<span class="terminal-prompt">$</span> pnpm --filter @payfreo/core start:local</code></pre>
+          </div>
+        </section>
+
+        <section class="trust-section" aria-labelledby="trust-title">
+          <div class="trust-mark" aria-hidden="true">!</div>
+          <div>
+            <p class="eyebrow">Security &amp; limitations</p>
+            <h2 id="trust-title">Pre-alpha means pre-alpha.</h2>
+            <p>
+              There is no payment engine, independent audit, or production release today. Do not use
+              real funds. A compromised frontend or RPC can still mislead a user; self-hosting does
+              not remove financial risk.
+            </p>
+          </div>
+          <a
+            class="button button-outline"
+            href="https://github.com/mahdifarshid/payfreo/blob/main/docs/THREAT_MODEL.md"
+            >Review the threat model <span aria-hidden="true">↗</span></a
+          >
+        </section>
+
+        <section class="closing-section" aria-labelledby="closing-title">
+          <p class="eyebrow"><span class="eyebrow-line"></span> Follow the build</p>
+          <h2 id="closing-title">Open source.<br /><em>Open decisions.</em></h2>
+          <p>
+            Read the design records, review the code, and contribute focused improvements as the
+            Core develops.
+          </p>
+          <div class="button-row">
+            <a class="button button-primary" href="https://github.com/mahdifarshid/payfreo"
+              >Explore the repository <span aria-hidden="true">↗</span></a
+            >
+            <a class="button button-secondary" href="./support.html"
+              >Support status <span aria-hidden="true">↗</span></a
+            >
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <div>
+          <a class="footer-brand" href="./">PayFreo<span class="footer-period">.</span></a>
+          <p>Maintained by <a href="https://github.com/mahdifarshid">Mahdi Farshid</a>.</p>
+        </div>
+        <nav aria-label="Footer navigation">
+          <a href="./docs.html">Developer notes</a><a href="./support.html">Support</a
+          ><a href="https://github.com/mahdifarshid/payfreo/blob/main/SECURITY.md">Security</a
+          ><a href="https://github.com/mahdifarshid/payfreo">GitHub</a>
+        </nav>
+        <p class="footer-note">Pre-alpha · Local and testnet only · No real funds</p>
+      </footer>
+    </div>
+  </body>
+</html>

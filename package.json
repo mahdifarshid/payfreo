@@ -14,7 +14,8 @@
     "typecheck": "pnpm --filter @payfreo/core typecheck",
     "build": "pnpm --filter @payfreo/core build",
     "test": "pnpm --filter @payfreo/core test",
-    "db:migrate": "pnpm --filter @payfreo/core db:migrate"
+    "db:migrate": "pnpm --filter @payfreo/core db:migrate",
+    "site:check": "node apps/website/check.mjs"
   },
   "devDependencies": {
     "@eslint/js": "9.39.5",

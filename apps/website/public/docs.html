@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f7f8f5" />
+    <meta
+      name="description"
+      content="Developer notes for the current PayFreo Core foundation: local setup, health endpoints, architecture, and limits."
+    />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Developer notes — PayFreo" />
+    <meta
+      property="og:description"
+      content="Set up the local PayFreo Core foundation and review its current limits."
+    />
+    <meta property="og:url" content="https://mahdifarshid.github.io/payfreo/docs.html" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="canonical" href="https://mahdifarshid.github.io/payfreo/docs.html" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+    <title>Developer notes — PayFreo</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="site-shell">
+      <header class="site-header">
+        <a class="brand" href="./" aria-label="PayFreo home"
+          ><span class="brand-mark" aria-hidden="true">P<span class="brand-dot"></span></span
+          ><span>PayFreo</span></a
+        >
+        <nav class="site-nav" aria-label="Main navigation">
+          <a href="./">Overview</a
+          ><a class="active" href="./docs.html" aria-current="page">Developer notes</a
+          ><a href="./support.html">Support</a
+          ><a class="nav-source" href="https://github.com/mahdifarshid/payfreo"
+            >GitHub <span aria-hidden="true">↗</span></a
+          >
+        </nav>
+      </header>
+
+      <main id="main" class="interior-main">
+        <header class="page-hero">
+          <p class="eyebrow"><span class="eyebrow-line"></span> Developer notes / foundation</p>
+          <h1>Build from <em>what exists.</em></h1>
+          <p>
+            The current repository contains a local NestJS Core foundation. These notes describe
+            what you can run today and where the payment design stands.
+          </p>
+          <div class="page-status">
+            <span class="status-pulse" aria-hidden="true"></span> Pre-alpha · Local and testnet
+            development only
+          </div>
+        </header>
+
+        <div class="doc-layout">
+          <aside class="doc-aside" aria-label="On this page">
+            <p>ON THIS PAGE</p>
+            <a href="#requirements">Requirements</a><a href="#run">Run locally</a
+            ><a href="#endpoints">Health endpoints</a><a href="#architecture">Architecture</a
+            ><a href="#limits">Limits</a>
+          </aside>
+          <div class="doc-content">
+            <section id="requirements" class="doc-section">
+              <span class="doc-index">01 / REQUIREMENTS</span>
+              <h2>What you need</h2>
+              <p>
+                Use Node.js 24 LTS for primary development. Node.js 22.13.0 or newer on the 22.x
+                line is the compatibility target. The repository pins pnpm 11.10.0. A local SQLite
+                file is enough for the foundation; no RPC provider or wallet key is needed.
+              </p>
+              <p>
+                Clone the
+                <a href="https://github.com/mahdifarshid/payfreo">public repository</a> and run
+                these commands from its root. Configuration stays in a local, Git-ignored
+                <code>.env</code> file.
+              </p>
+            </section>
+
+            <section id="run" class="doc-section">
+              <span class="doc-index">02 / LOCAL SETUP</span>
+              <h2>Run the Core foundation</h2>
+              <div class="code-panel">
+                <div class="code-panel-title">Terminal · repository root</div>
+                <pre><code>cp .env.example .env
+pnpm install --frozen-lockfile
+pnpm --filter @payfreo/core db:generate
+pnpm db:migrate
+pnpm build
+pnpm --filter @payfreo/core start:local</code></pre>
+              </div>
+              <p>
+                The service binds to <code>127.0.0.1:3000</code> by default. For a container-based
+                local run, use <code>docker compose up --build</code>; Compose persists the SQLite
+                database in a named volume.
+              </p>
+              <p>
+                Run <code>pnpm format:check</code>, <code>pnpm lint</code>,
+                <code>pnpm typecheck</code>, and <code>pnpm test</code> before contributing.
+              </p>
+            </section>
+
+            <section id="endpoints" class="doc-section">
+              <span class="doc-index">03 / CURRENT HTTP SURFACE</span>
+              <h2>Health, and only health</h2>
+              <div class="endpoint-list">
+                <div>
+                  <code>GET /health/live</code>
+                  <p>
+                    Returns <code>200</code> when the process responds. It does not check storage or
+                    payment capability.
+                  </p>
+                </div>
+                <div>
+                  <code>GET /health/ready</code>
+                  <p>
+                    Returns <code>200</code> after migrations have completed and the Core table is
+                    queryable; otherwise <code>503</code>.
+                  </p>
+                </div>
+              </div>
+              <p>
+                Invoice creation, transaction submission, payment status, authentication, and
+                webhooks are <strong>not implemented</strong>. A health response must never be
+                treated as a payment confirmation.
+              </p>
+            </section>
+
+            <section id="architecture" class="doc-section">
+              <span class="doc-index">04 / DESIGN RECORDS</span>
+              <h2>Why the layers look this way</h2>
+              <p>
+                The health controller handles HTTP, its service owns readiness behavior, and the
+                database module exposes a narrow readiness capability. Future payment modules will
+                need their own services, persistence adapters, and tests.
+              </p>
+              <div class="link-list">
+                <a href="https://github.com/mahdifarshid/payfreo/blob/main/docs/ARCHITECTURE.md"
+                  >Core architecture <span aria-hidden="true">↗</span></a
+                ><a
+                  href="https://github.com/mahdifarshid/payfreo/blob/main/docs/ADR/0002-payment-attribution.md"
+                  >Invoice address decision <span aria-hidden="true">↗</span></a
+                ><a
+                  href="https://github.com/mahdifarshid/payfreo/blob/main/docs/ADR/0003-storage.md"
+                  >Storage decision <span aria-hidden="true">↗</span></a
+                ><a href="https://github.com/mahdifarshid/payfreo/blob/main/DEVELOP.md"
+                  >Development plan <span aria-hidden="true">↗</span></a
+                >
+              </div>
+            </section>
+
+            <section id="limits" class="doc-section doc-alert">
+              <span class="doc-index">05 / IMPORTANT LIMITS</span>
+              <h2>Keep real funds out.</h2>
+              <p>
+                PayFreo has not implemented payment verification and has no independent security
+                audit or production release. The future receive-only Core will never need merchant
+                private keys. The merchant must provision distinct public receiving addresses
+                outside PayFreo.
+              </p>
+              <p>
+                Read the
+                <a href="https://github.com/mahdifarshid/payfreo/blob/main/docs/THREAT_MODEL.md"
+                  >draft threat model</a
+                >
+                and
+                <a href="https://github.com/mahdifarshid/payfreo/blob/main/SECURITY.md"
+                  >security policy</a
+                >
+                before evaluating the project.
+              </p>
+            </section>
+          </div>
+        </div>
+      </main>
+
+      <footer class="site-footer">
+        <div>
+          <a class="footer-brand" href="./">PayFreo<span class="footer-period">.</span></a>
+          <p>Maintained by <a href="https://github.com/mahdifarshid">Mahdi Farshid</a>.</p>
+        </div>
+        <nav aria-label="Footer navigation">
+          <a href="./">Overview</a><a href="./support.html">Support</a
+          ><a href="https://github.com/mahdifarshid/payfreo/blob/main/SECURITY.md">Security</a
+          ><a href="https://github.com/mahdifarshid/payfreo">GitHub</a>
+        </nav>
+        <p class="footer-note">Pre-alpha · Local and testnet only · No real funds</p>
+      </footer>
+    </div>
+  </body>
+</html>
