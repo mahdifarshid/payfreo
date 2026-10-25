@@ -1,5 +1,6 @@
 packages:
   - apps/*
+  - packages/*
 
 overrides:
   ohash: 2.0.11

@@ -59,6 +59,8 @@ importers:
         specifier: 6.19.3
         version: 6.19.3(typescript@5.9.3)
 
+  packages/sdk-ts: {}
+
 packages:
 
   '@borewit/text-codec@0.2.2':

@@ -11,9 +11,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
-    "typecheck": "pnpm --filter @payfreo/core typecheck",
-    "build": "pnpm --filter @payfreo/core build",
-    "test": "pnpm --filter @payfreo/core test",
+    "typecheck": "pnpm --filter @payfreo/core typecheck && pnpm --filter payfreo typecheck",
+    "build": "pnpm --filter @payfreo/core build && pnpm --filter payfreo build",
+    "test": "pnpm --filter @payfreo/core test && pnpm --filter payfreo test",
     "db:migrate": "pnpm --filter @payfreo/core db:migrate",
     "site:check": "node apps/website/check.mjs"
   },

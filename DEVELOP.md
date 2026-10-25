@@ -12,9 +12,10 @@
 ### Repository foundation and working-file policy
 
 The current milestone adds discovery records and a local Core foundation to the repository
-standards. The pnpm workspace contains a NestJS service, SQLite migration, health checks, tests, and
-container definition. Payment endpoints, SDKs, contracts, and deployment remain future work. Read
-[CONTRIBUTING.md](CONTRIBUTING.md) for the maintained development conventions and local commands.
+standards. The pnpm workspace contains a NestJS service, SQLite migration, health checks, tests, a
+container definition, and a limited TypeScript health client beta in source. Payment endpoints,
+payment SDKs, contracts, and deployment remain future work. Read [CONTRIBUTING.md](CONTRIBUTING.md)
+for the maintained development conventions and local commands.
 
 Write all documentation, comments, and working files in English. Keep temporary plans under
 `agent/plans/`, execution reports under `agent/reports/`, and research or scratch artifacts under

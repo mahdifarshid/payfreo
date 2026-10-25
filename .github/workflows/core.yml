@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   verify:
-    name: Verify Core (Node ${{ matrix.node }})
+    name: Verify Core and client (Node ${{ matrix.node }})
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:

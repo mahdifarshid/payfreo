@@ -1,0 +1,45 @@
+{
+  "name": "payfreo",
+  "version": "0.1.0-beta.0",
+  "description": "Pre-alpha client for the merchant-hosted PayFreo Core health API.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "author": "Mahdi Farshid",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mahdifarshid/payfreo.git",
+    "directory": "packages/sdk-ts"
+  },
+  "homepage": "https://github.com/mahdifarshid/payfreo#readme",
+  "bugs": "https://github.com/mahdifarshid/payfreo/issues",
+  "keywords": [
+    "payfreo",
+    "health",
+    "self-hosted",
+    "typescript"
+  ],
+  "engines": {
+    "node": ">=22.13.0 <23 || >=24.0.0 <25"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "tag": "beta"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
+    "test": "pnpm build && node --test tests/*.test.mjs",
+    "prepack": "tsc -p tsconfig.build.json"
+  }
+}

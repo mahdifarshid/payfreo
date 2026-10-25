@@ -5,8 +5,8 @@
 > **Pre-alpha · Local/testnet only · Not for real funds**
 >
 > This repository contains a local Core foundation, design records, and development tooling. There
-> is no implemented payment engine, SDK, smart contract, production deployment, or independent
-> security audit.
+> is no implemented payment engine, payment SDK, smart contract, production deployment, or
+> independent security audit. A limited TypeScript health client is in source.
 
 _Your server. Your wallet. Verifiable payments._
 
@@ -29,9 +29,10 @@ working code and reproducible evidence. PayFreo does not claim superiority over 
 | Product specification and development sequence    | Documented in [DEVELOP.md](DEVELOP.md)              |
 | Scope, attribution, storage, and threat model     | Initial design records in [docs/](docs/)            |
 | Core foundation                                   | NestJS service, SQLite migration, and health checks |
+| TypeScript health client                          | Beta source and tests; npm publication pending      |
 | Formatting and Core CI                            | Defined; hosted execution not yet verified          |
 | Invoice API, ERC-20 verifier, and signed webhooks | Planned                                             |
-| TypeScript SDK and checkout example               | Planned after Core verification                     |
+| TypeScript payment SDK and checkout example       | Planned after Core verification                     |
 | PHP, Python, Go, and Rust integrations            | Later, based on demonstrated demand                 |
 | Revenue sharing, governance, and escrow contracts | Separate future modules                             |
 | Production release and independent security audit | Not available                                       |
@@ -64,6 +65,10 @@ reliable payment verification. See the [attribution decision](docs/ADR/0002-paym
 
 The Core foundation starts locally and exposes only `/health/live` and `/health/ready`. It does not
 create invoices or process payments.
+
+The [TypeScript health client](packages/sdk-ts/README.md) calls these two endpoints and does not
+verify payments. Its beta package is prepared locally; check the npm registry before treating it as
+published.
 
 Prerequisites: Node.js **24 LTS** (recommended; pinned to **24.22.1**) or Node.js **22.13.0+ within
 22.x**, with pnpm **11.10.0**. CI is configured for both Node.js lines.
