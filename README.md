@@ -24,19 +24,19 @@ working code and reproducible evidence. PayFreo does not claim superiority over 
 
 ## Current status
 
-| Area                                              | Status                                              |
-| ------------------------------------------------- | --------------------------------------------------- |
-| Product specification and development sequence    | Documented in [DEVELOP.md](DEVELOP.md)              |
-| Scope, attribution, storage, and threat model     | Initial design records in [docs/](docs/)            |
-| Core foundation                                   | NestJS service, SQLite migration, and health checks |
-| TypeScript health client                          | Beta source and tests; npm publication pending      |
-| Formatting and Core CI                            | Defined; hosted execution not yet verified          |
-| Invoice API, ERC-20 verifier, and signed webhooks | Planned                                             |
-| TypeScript payment SDK and checkout example       | Planned after Core verification                     |
-| PHP, Python, Go, and Rust integrations            | Later, based on demonstrated demand                 |
-| Revenue sharing, governance, and escrow contracts | Separate future modules                             |
-| Production release and independent security audit | Not available                                       |
-| Sponsorship and contributor payments              | Not active                                          |
+| Area                                              | Status                                                                                  |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Product specification and development sequence    | Documented in [DEVELOP.md](DEVELOP.md)                                                  |
+| Scope, attribution, storage, and threat model     | Initial design records in [docs/](docs/)                                                |
+| Core foundation                                   | NestJS service, SQLite migration, and health checks                                     |
+| TypeScript health client                          | [npm beta 0.1.0-beta.0](https://www.npmjs.com/package/payfreo/v/0.1.0-beta.0) and tests |
+| Formatting and Core CI                            | Defined; hosted execution not yet verified                                              |
+| Invoice API, ERC-20 verifier, and signed webhooks | Planned                                                                                 |
+| TypeScript payment SDK and checkout example       | Planned after Core verification                                                         |
+| PHP, Python, Go, and Rust integrations            | Later, based on demonstrated demand                                                     |
+| Revenue sharing, governance, and escrow contracts | Separate future modules                                                                 |
+| Production release and independent security audit | Not available                                                                           |
+| Sponsorship and contributor payments              | Not active                                                                              |
 
 A feature is implemented only after code exists, documentation is accurate, and its required checks
 have actually passed. Planned integrations are not supported integrations.
@@ -67,8 +67,20 @@ The Core foundation starts locally and exposes only `/health/live` and `/health/
 create invoices or process payments.
 
 The [TypeScript health client](packages/sdk-ts/README.md) calls these two endpoints and does not
-verify payments. Its beta package is prepared locally; check the npm registry before treating it as
-published.
+verify payments. The published npm beta is `payfreo@0.1.0-beta.0`; use the exact version while npm
+distribution tags are being finalized.
+
+```sh
+npm install payfreo@0.1.0-beta.0
+```
+
+```js
+import { PayFreoClient } from 'payfreo';
+
+const core = new PayFreoClient({ baseUrl: 'http://127.0.0.1:3000' });
+console.log(await core.live());
+console.log(await core.ready());
+```
 
 Prerequisites: Node.js **24 LTS** (recommended; pinned to **24.22.1**) or Node.js **22.13.0+ within
 22.x**, with pnpm **11.10.0**. CI is configured for both Node.js lines.

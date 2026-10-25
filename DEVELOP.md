@@ -2,10 +2,10 @@
 
 > **Status:** Planning specification with a local Core foundation; no payment engine. **Project
 > owner:** [Mahdi Farshid](https://github.com/mahdifarshid) **Project brand:** PayFreo (selected by
-> the maintainer; the public repository exists, while domain, trademark and package availability
-> remain unverified). **Document version:** 0.3 — 2026-10-25 **Language for all documentation,
-> comments, contributor-facing text and working documents:** English. **North star:** _Your server.
-> Your wallet. Verifiable payments._
+> the maintainer; the public repository exists, npm `payfreo@0.1.0-beta.0` is published, and domain,
+> trademark, and other package names remain unverified). **Document version:** 0.3 — 2026-10-25
+> **Language for all documentation, comments, contributor-facing text and working documents:**
+> English. **North star:** _Your server. Your wallet. Verifiable payments._
 
 ## 0. Engineering standards
 
@@ -13,9 +13,9 @@
 
 The current milestone adds discovery records and a local Core foundation to the repository
 standards. The pnpm workspace contains a NestJS service, SQLite migration, health checks, tests, a
-container definition, and a limited TypeScript health client beta in source. Payment endpoints,
-payment SDKs, contracts, and deployment remain future work. Read [CONTRIBUTING.md](CONTRIBUTING.md)
-for the maintained development conventions and local commands.
+container definition, and a limited TypeScript health client published as an npm beta. Payment
+endpoints, payment SDKs, contracts, and deployment remain future work. Read
+[CONTRIBUTING.md](CONTRIBUTING.md) for the maintained development conventions and local commands.
 
 Write all documentation, comments, and working files in English. Keep temporary plans under
 `agent/plans/`, execution reports under `agent/reports/`, and research or scratch artifacts under
